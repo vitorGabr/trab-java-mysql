@@ -26,7 +26,7 @@ public abstract class DaoImplement {
         this.table = table;
     }
 
-    public String getTable() {
+    protected String getTable() {
         return table;
     }
 
