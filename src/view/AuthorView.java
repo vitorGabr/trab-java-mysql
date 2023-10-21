@@ -10,17 +10,17 @@ import src.entity.BookAuthor;
 import src.entity.Publisher;
 
 public interface AuthorView {
-    String getNomeBuscaAuthor();
+    String getAuthorSearchName();
 
-    void buscarAuthor(ActionListener al);
+    void searchAuthor(ActionListener al);
 
-    void criarAuthor(ActionListener al);
+    void createAuthor(ActionListener al);
 
-    Map<String, Object> getNewAuthorInfo();
+    Map<String, Object> getNewAuthorInformation();
 
     void listAuthors(List<BookAuthor> authors);
 
-    void addTableListener(MouseAdapter al);
+    void addTableClickListener(MouseAdapter al);
 
     void init(List<Publisher> publishers, List<Author> authors);
 }

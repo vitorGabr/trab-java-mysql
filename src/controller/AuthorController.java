@@ -37,9 +37,9 @@ public class AuthorController {
     }
 
     public void init() {
-        this.view.buscarBook(new SearchNameAction());
-        this.view.criarBook(new CreateAction());
-        this.view.addTableListener(new TableMouseAdapter());
+        this.view.searchBook(new SearchNameAction());
+        this.view.createBook(new CreateAction());
+        this.view.addTableClickListener(new TableMouseAdapter());
         this.view.listBooks(books);
         this.view.init(publishers, authors);
 
@@ -49,7 +49,7 @@ public class AuthorController {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            String title = view.getNomeBuscaBook();
+            String title = view.getBookSearchName();
             books = dao.findAllBooks(title);
 
             view.listBooks(books);
@@ -59,7 +59,7 @@ public class AuthorController {
     class CreateAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent event) {
-            Map<String, Object> newBookInfo = view.getNewBookInfo();
+            Map<String, Object> newBookInfo = view.getNewBookInformation();
 
             @SuppressWarnings("unchecked")
             List<Integer> authors = (List<Integer>) newBookInfo.get("authors");

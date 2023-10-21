@@ -43,28 +43,23 @@ public class BookTab extends JPanel implements BookView {
         this.revalidate();
     }
 
-    public String getNomeBuscaBook() {
+    public String getBookSearchName() {
         return this.search.getSearchedName();
     }
 
-    public void buscarBook(ActionListener al) {
+    public void searchBook(ActionListener al) {
         this.search.addSearchListener(al);
     }
 
-    public void criarBook(ActionListener al) {
+    public void createBook(ActionListener al) {
         this.createItem.retrieve(al);
     }
 
-    public Map<String, Object> getNewBookInfo() {
+    public Map<String, Object> getNewBookInformation() {
         return this.createItem.getTypedValues();
     }
 
-    public void showCreateItem(List<Publisher> publishers, List<Author> authors) {
-        createItem.init(authors, publishers);
-        this.revalidate();
-    }
-
-    public void addTableListener(MouseAdapter md) {
+    public void addTableClickListener(MouseAdapter md) {
         table.addTableListener(md);
     }
 
