@@ -14,7 +14,7 @@ import javax.swing.JTable;
 
 import src.dao.Dao;
 import src.entity.Author;
-import src.entity.BookAuthor;
+import src.entity.Book;
 import src.entity.Publisher;
 import src.view.BookView;
 
@@ -22,7 +22,7 @@ public class BookController {
 
     private BookView view;
     private Dao dao;
-    private List<BookAuthor> books;
+    private List<Book> books;
     private List<Publisher> publishers;
     private List<Author> authors;
 
@@ -107,9 +107,9 @@ public class BookController {
                         JOptionPane.YES_NO_OPTION);
 
                 if (resposta == JOptionPane.YES_OPTION) {
-                    BookAuthor book = books.get(row);
+                    Book book = books.get(row);
                     try {
-                        if (!dao.deleteBook(book.getBook().getIsbn())) {
+                        if (!dao.deleteBook(book.getIsbn())) {
                             throw new Exception();
                         }
                         JOptionPane.showMessageDialog(null, "Livro deletado com sucesso!");

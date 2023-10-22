@@ -13,28 +13,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import src.dao.Dao;
-import src.entity.Author;
-import src.view.AuthorView;
+import src.entity.Publisher;
+import src.view.PublisherView;
 
-public class AuthorController {
+public class PublisherController {
 
-    private AuthorView view;
+    private PublisherView view;
     private Dao dao;
-    private List<Author> authors;
+    private List<Publisher> publishers;
 
-    public AuthorController(AuthorView view, Dao dao) {
+    public PublisherController(PublisherView view, Dao dao) {
 
-        authors = dao.findAllAuthors("");
+        publishers = dao.findAllPublishers("");
 
         this.view = view;
         this.dao = dao;
     }
 
     public void init() {
-        this.view.searchAuthor(new SearchNameAction());
-        this.view.createAuthor(new CreateAction());
+        this.view.searchPublisher(new SearchNameAction());
+        this.view.createPublisher(new CreateAction());
         this.view.addTableClickListener(new TableMouseAdapter());
-        this.view.listAuthors(authors);
+        this.view.listPublishers(publishers);
         this.view.init();
 
     }
@@ -43,43 +43,43 @@ public class AuthorController {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            String title = view.getAuthorSearchName();
-            authors = dao.findAllAuthors(title);
+            String name = view.getPublisherSearchName();
+            publishers = dao.findAllPublishers(name);
 
-            view.listAuthors(authors);
+            view.listPublishers(publishers);
         }
     }
 
     class CreateAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent event) {
-            Map<String, Object> newAuthorInfo = view.getNewAuthorInformation();
+            Map<String, Object> newPublisherInfo = view.getNewPublisherInformation();
 
-            if (newAuthorInfo.values().stream().filter(value -> value.toString().isEmpty()).count() > 0
-                    || authors.size() == 0) {
+            if (newPublisherInfo.values().stream().filter(value -> value.toString().isEmpty()).count() > 0
+                    || publishers.size() == 0) {
                 JOptionPane.showMessageDialog(null, "Os campos são obrigatórios!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String name = newAuthorInfo.get("name").toString();
-            String fname = newAuthorInfo.get("fname").toString();
+            String name = newPublisherInfo.get("name").toString();
+            String url = newPublisherInfo.get("url").toString();
 
             try {
-                if (!dao.addAuthor(name, fname)) {
+                if (!dao.addPublisher(name, url)) {
                     throw new Exception();
                 }
-                authors = dao.findAllAuthors("");
-                JOptionPane.showMessageDialog(null, "Autor criado com sucesso!");
-                view.listAuthors(authors);
+                publishers = dao.findAllPublishers("");
+                JOptionPane.showMessageDialog(null, "Editora criada com sucesso!");
+                view.listPublishers(publishers);
             } catch (SQLIntegrityConstraintViolationException e) {
-                JOptionPane.showMessageDialog(null, "Autor já existe!", "Erro",
+                JOptionPane.showMessageDialog(null, "Editora já existe!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Não é possível criar um autor!", "Erro",
+                JOptionPane.showMessageDialog(null, "Não é possível criar uma editora!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Erro ao criar autor!", "Erro",
+                JOptionPane.showMessageDialog(null, "Erro ao criar editora!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -90,26 +90,26 @@ public class AuthorController {
         public void mouseClicked(MouseEvent e) {
             JTable target = (JTable) e.getSource();
             int row = target.getSelectedRow();
-            if (row < authors.size()) {
-                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar o autor?", "Deletar",
+            if (row < publishers.size()) {
+                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar a editora?", "Deletar",
                         JOptionPane.YES_NO_OPTION);
 
                 if (resposta == JOptionPane.YES_OPTION) {
-                    Author book = authors.get(row);
+                    Publisher publisher = publishers.get(row);
                     try {
-                        if (!dao.deleteAuthor(book.getAuthor_id())) {
+                        if (!dao.deletePublisher(publisher.getId())) {
                             throw new Exception();
                         }
-                        JOptionPane.showMessageDialog(null, "Autor deletado com sucesso!");
+                        JOptionPane.showMessageDialog(null, "Editora deletada com sucesso!");
                     } catch (SQLException e1) {
-                        JOptionPane.showMessageDialog(null, "Não é possível deletar o autor!", "Erro",
+                        JOptionPane.showMessageDialog(null, "Não é possível deletar a editora!", "Erro",
                                 JOptionPane.ERROR_MESSAGE);
                     } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null, "Erro ao deletar autor!", "Erro",
+                        JOptionPane.showMessageDialog(null, "Erro ao deletar editora!", "Erro",
                                 JOptionPane.ERROR_MESSAGE);
                     } finally {
-                        authors = dao.findAllAuthors("");
-                        view.listAuthors(authors);
+                        publishers = dao.findAllPublishers("");
+                        view.listPublishers(publishers);
                     }
                 }
 

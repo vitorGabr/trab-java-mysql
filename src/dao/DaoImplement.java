@@ -101,13 +101,13 @@ public abstract class DaoImplement {
         }
     }
 
-    protected boolean delete(String id, int value) throws SQLIntegrityConstraintViolationException {
+    protected boolean delete(String id, String value) throws SQLIntegrityConstraintViolationException {
 
         try (Connection c = getConnection()) {
             String comando = "DELETE FROM " + table + " WHERE " + id + " = ?";
 
             PreparedStatement s = c.prepareStatement(comando);
-            s.setInt(1, value);
+            s.setString(1, value);
             s.executeUpdate();
             return true;
         } catch (Exception e) {

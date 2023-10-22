@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import src.entity.Author;
-import src.entity.BookAuthor;
+import src.entity.Book;
 import src.entity.Publisher;
 
 public interface BookView {
@@ -18,7 +18,7 @@ public interface BookView {
 
     Map<String, Object> getNewBookInformation();
 
-    void listBooks(List<BookAuthor> bookAuthors);
+    void listBooks(List<Book> bookAuthors);
 
     void addTableClickListener(MouseAdapter al);
 

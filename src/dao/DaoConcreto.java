@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import src.entity.Author;
-import src.entity.BookAuthor;
+import src.entity.Book;
 import src.entity.InsertSql;
 import src.entity.Publisher;
 
@@ -40,25 +40,27 @@ public class DaoConcreto extends DaoImplement implements Dao {
                 "fname", fname)));
         return this.insert(data);
     }
+
+    public boolean deleteAuthor(int id) throws SQLException {
+        setTable("authors");
+        String _id = String.valueOf(id);
+        return this.delete("author_id", _id);
+    }
     // FIM DA PARTE DO AUTOR
 
     // INICIO DA PARTE DO LIVRO
-    public List<BookAuthor> findAllBooks(String title) {
-        setTable("booksauthors");
+    public List<Book> findAllBooks(String title) {
+        setTable("books");
 
-        List<BookAuthor> books = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
         List<Object> params = new ArrayList<>();
 
-        String comando = "SELECT * " +
-                "FROM books " +
-                "INNER JOIN booksauthors ON books.isbn = booksauthors.isbn " +
-                "INNER JOIN authors ON booksauthors.author_id = authors.author_id " +
-                "WHERE LOWER(books.title) LIKE LOWER(?)";
+        String comando = "LOWER(title) LIKE LOWER(?)";
 
         params.add("%" + title + "%");
 
         this.findAll(comando, params).forEach((r) -> {
-            books.add(BookAuthor.createFromMap(r));
+            books.add(Book.createFromMap(r));
         });
         return books;
 
@@ -90,7 +92,8 @@ public class DaoConcreto extends DaoImplement implements Dao {
     }
 
     public boolean deleteBook(String id) throws SQLException {
-        return this.deleteBookAndRelated(id);
+        setTable("books");
+        return this.delete("isbn", id);
     }
     // FIM DA PARTE DO LIVRO
 

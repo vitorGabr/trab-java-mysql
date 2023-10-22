@@ -5,7 +5,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import src.entity.Author;
-import src.entity.BookAuthor;
+import src.entity.Book;
 import src.entity.Publisher;
 
 public interface Dao {
@@ -14,10 +14,12 @@ public interface Dao {
         public List<Author> findAllAuthors(String name);
 
         public boolean addAuthor(String name, String fname) throws SQLIntegrityConstraintViolationException;
+
+        public boolean deleteAuthor(int id) throws SQLException;
         // FIM DO AUTOR
 
         // INICIO DO LIVRO
-        public List<BookAuthor> findAllBooks(String title);
+        public List<Book> findAllBooks(String title);
 
         public boolean addBook(String title,
                         int publisher_id,

@@ -9,7 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import src.entity.Author;
-import src.entity.BookAuthor;
+import src.entity.Book;
 import src.entity.Publisher;
 import src.view.implementaion.components.CreateBook;
 import src.view.BookView;
@@ -18,7 +18,7 @@ import src.view.implementaion.components.Table;
 
 public class BookTab extends JPanel implements BookView {
 
-    private Table table = new Table(new Object[] { "ID", "Nome", "Autor", "Preço" });
+    private Table table = new Table(new Object[] { "ID", "Nome", "Preço" });
     private Search search = new Search();
     private CreateBook createItem = new CreateBook();
 
@@ -30,14 +30,13 @@ public class BookTab extends JPanel implements BookView {
         add(createItem);
     }
 
-    public void listBooks(List<BookAuthor> books) {
+    public void listBooks(List<Book> books) {
         table.clearTable();
-        for (BookAuthor p : books) {
+        for (Book p : books) {
             Object[] rowData = {
-                    p.getBook().getIsbn(),
-                    p.getBook().getTitle(),
-                    p.getAuthor().getName(),
-                    p.getBook().getPrice() };
+                    p.getIsbn(),
+                    p.getTitle(),
+                    p.getPrice() };
             table.addRow(rowData);
         }
         this.revalidate();

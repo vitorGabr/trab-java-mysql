@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import src.entity.Author;
-import src.entity.BookAuthor;
-import src.entity.Publisher;
 
 public interface AuthorView {
     String getAuthorSearchName();
@@ -18,9 +16,9 @@ public interface AuthorView {
 
     Map<String, Object> getNewAuthorInformation();
 
-    void listAuthors(List<BookAuthor> authors);
+    void listAuthors(List<Author> authors);
 
     void addTableClickListener(MouseAdapter al);
 
-    void init(List<Publisher> publishers, List<Author> authors);
+    void init();
 }
