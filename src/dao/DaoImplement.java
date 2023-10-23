@@ -30,7 +30,7 @@ public abstract class DaoImplement {
         return table;
     }
 
-    private Connection getConnection() throws Exception {
+    protected Connection getConnection() throws Exception {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
@@ -114,105 +114,6 @@ public abstract class DaoImplement {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public boolean deleteBookAndRelated(String idToDelete) throws SQLException {
-        Boolean result = false;
-        try (Connection c = getConnection()) {
-            c.setAutoCommit(false);
-            try {
-                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE isbn = ?";
-                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
-                    bookAuthorsStatement.setString(1, idToDelete);
-                    bookAuthorsStatement.executeUpdate();
-                }
-
-                String deleteBookQuery = "DELETE FROM books WHERE isbn = ?";
-                try (PreparedStatement bookStatement = c.prepareStatement(deleteBookQuery)) {
-                    bookStatement.setString(1, idToDelete);
-                    bookStatement.executeUpdate();
-                }
-                result = true;
-                c.commit();
-            } catch (SQLException e) {
-                c.rollback();
-                throw e;
-            } finally {
-                c.setAutoCommit(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    public boolean deleteAuthorAndRelated(String idToDelete) throws SQLException {
-        Boolean result = false;
-        try (Connection c = getConnection()) {
-            c.setAutoCommit(false);
-            try {
-                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE author_id = ?";
-                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
-                    bookAuthorsStatement.setString(1, idToDelete);
-                    bookAuthorsStatement.executeUpdate();
-                }
-
-                String deleteAuthorQuery = "DELETE FROM authors WHERE author_id = ?";
-                try (PreparedStatement authorStatement = c.prepareStatement(deleteAuthorQuery)) {
-                    authorStatement.setString(1, idToDelete);
-                    authorStatement.executeUpdate();
-                }
-                result = true;
-                c.commit();
-            } catch (SQLException e) {
-                c.rollback();
-                throw e;
-            } finally {
-                c.setAutoCommit(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    public boolean deletePublisherAndRelated(int idToDelete) throws SQLException {
-        Boolean result = false;
-        try (Connection c = getConnection()) {
-            c.setAutoCommit(false);
-            try {
-                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE isbn IN (SELECT isbn FROM books WHERE publisher_id = ?)";
-                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
-                    bookAuthorsStatement.setInt(1, idToDelete);
-                    bookAuthorsStatement.executeUpdate();
-                }
-
-                String deleteBooksQuery = "DELETE FROM books WHERE publisher_id = ?";
-                try (PreparedStatement booksStatement = c.prepareStatement(deleteBooksQuery)) {
-                    booksStatement.setInt(1, idToDelete);
-                    booksStatement.executeUpdate();
-                }
-
-                String deletePublisherQuery = "DELETE FROM publishers WHERE publisher_id = ?";
-                try (PreparedStatement publisherStatement = c.prepareStatement(deletePublisherQuery)) {
-                    publisherStatement.setInt(1, idToDelete);
-                    publisherStatement.executeUpdate();
-                }
-                result = true;
-                c.commit();
-            } catch (SQLException e) {
-                c.rollback();
-                throw e;
-            } finally {
-                c.setAutoCommit(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
     }
 
 }

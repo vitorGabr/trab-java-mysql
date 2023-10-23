@@ -1,5 +1,7 @@
 package src.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -42,9 +44,34 @@ public class DaoConcreto extends DaoImplement implements Dao {
     }
 
     public boolean deleteAuthor(int id) throws SQLException {
-        setTable("authors");
-        String _id = String.valueOf(id);
-        return this.delete("author_id", _id);
+        Boolean result = false;
+        try (Connection c = getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE author_id = ?";
+                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
+                    bookAuthorsStatement.setInt(1, id);
+                    bookAuthorsStatement.executeUpdate();
+                }
+
+                String deleteAuthorQuery = "DELETE FROM authors WHERE author_id = ?";
+                try (PreparedStatement authorStatement = c.prepareStatement(deleteAuthorQuery)) {
+                    authorStatement.setInt(1, id);
+                    authorStatement.executeUpdate();
+                }
+                result = true;
+                c.commit();
+            } catch (SQLException e) {
+                c.rollback();
+                throw e;
+            } finally {
+                c.setAutoCommit(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
     // FIM DA PARTE DO AUTOR
 
@@ -92,8 +119,34 @@ public class DaoConcreto extends DaoImplement implements Dao {
     }
 
     public boolean deleteBook(String id) throws SQLException {
-        setTable("books");
-        return this.delete("isbn", id);
+        Boolean result = false;
+        try (Connection c = getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE isbn = ?";
+                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
+                    bookAuthorsStatement.setString(1, id);
+                    bookAuthorsStatement.executeUpdate();
+                }
+
+                String deleteBookQuery = "DELETE FROM books WHERE isbn = ?";
+                try (PreparedStatement bookStatement = c.prepareStatement(deleteBookQuery)) {
+                    bookStatement.setString(1, id);
+                    bookStatement.executeUpdate();
+                }
+                result = true;
+                c.commit();
+            } catch (SQLException e) {
+                c.rollback();
+                throw e;
+            } finally {
+                c.setAutoCommit(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
     // FIM DA PARTE DO LIVRO
 
@@ -126,7 +179,40 @@ public class DaoConcreto extends DaoImplement implements Dao {
     }
 
     public boolean deletePublisher(int id) throws SQLException {
-        return this.deletePublisherAndRelated(id);
+        Boolean result = false;
+        try (Connection c = this.getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                String deleteBookAuthorsQuery = "DELETE FROM booksauthors WHERE isbn IN (SELECT isbn FROM books WHERE publisher_id = ?)";
+                try (PreparedStatement bookAuthorsStatement = c.prepareStatement(deleteBookAuthorsQuery)) {
+                    bookAuthorsStatement.setInt(1, id);
+                    bookAuthorsStatement.executeUpdate();
+                }
+
+                String deleteBooksQuery = "DELETE FROM books WHERE publisher_id = ?";
+                try (PreparedStatement booksStatement = c.prepareStatement(deleteBooksQuery)) {
+                    booksStatement.setInt(1, id);
+                    booksStatement.executeUpdate();
+                }
+
+                String deletePublisherQuery = "DELETE FROM publishers WHERE publisher_id = ?";
+                try (PreparedStatement publisherStatement = c.prepareStatement(deletePublisherQuery)) {
+                    publisherStatement.setInt(1, id);
+                    publisherStatement.executeUpdate();
+                }
+                result = true;
+                c.commit();
+            } catch (SQLException e) {
+                c.rollback();
+                throw e;
+            } finally {
+                c.setAutoCommit(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
     // FIM DA PARTE DA EDITORA
 }

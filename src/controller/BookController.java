@@ -86,6 +86,9 @@ public class BookController {
             } catch (SQLIntegrityConstraintViolationException e) {
                 JOptionPane.showMessageDialog(null, "ISBN já cadastrado!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Não é possível criar um livro!", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Erro ao criar livro!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
@@ -115,7 +118,7 @@ public class BookController {
                         JOptionPane.showMessageDialog(null, "Livro deletado com sucesso!");
 
                     } catch (SQLException e1) {
-                        JOptionPane.showMessageDialog(null, "Não é possível deletar um livro!", "Erro",
+                        JOptionPane.showMessageDialog(null, "Não é possível deletar o livro!", "Erro",
                                 JOptionPane.ERROR_MESSAGE);
                     } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null, "Erro ao deletar livro!", "Erro",
