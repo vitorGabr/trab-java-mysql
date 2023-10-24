@@ -6,4 +6,8 @@ public interface View {
 
     BookView getBookT();
 
+    AuthorView getAuthorT();
+
+    PublisherView getPublisherT();
+
 }
