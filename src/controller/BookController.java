@@ -90,7 +90,7 @@ public class BookController {
                 JOptionPane.showMessageDialog(null, "Não é possível criar um livro!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Erro ao criar livro!", "Erro",
+                JOptionPane.showMessageDialog(null, "ISBN já cadastrado!", "Erro",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -104,8 +104,9 @@ public class BookController {
             if (row < books.size()) {
                 int resposta = JOptionPane.showConfirmDialog(
                         null,
-                        "Ao deletar um livro, todos as relações\n" +
-                                "com autores serão deletadas também.\n",
+                        "Deseja deletar o livro ? \n" +
+                                "Ao deletar o livro, todas relações \n" +
+                                "com autores serão deletadas!",
                         "Deletar livro?",
                         JOptionPane.YES_NO_OPTION);
 

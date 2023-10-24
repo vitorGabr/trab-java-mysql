@@ -13,7 +13,7 @@ import src.entity.Book;
 import src.entity.InsertSql;
 import src.entity.Publisher;
 
-public class DaoConcreto extends DaoImplement implements Dao {
+public class DaoConcreto extends DaoFactory implements Dao {
 
     // INICIO DA PARTE DO AUTOR
     public List<Author> findAllAuthors(String name) {
@@ -21,7 +21,8 @@ public class DaoConcreto extends DaoImplement implements Dao {
         List<Author> autores = new ArrayList<>();
         List<Object> params = new ArrayList<>();
 
-        String comando = "LOWER(name) LIKE LOWER(?)";
+        String comando = "LOWER(name) LIKE LOWER(?) OR LOWER(fname) LIKE LOWER(?)";
+        params.add("%" + name + "%");
         params.add("%" + name + "%");
 
         this.findAll(comando, params).forEach((r) -> {

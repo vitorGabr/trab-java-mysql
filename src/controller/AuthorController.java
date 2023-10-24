@@ -91,7 +91,8 @@ public class AuthorController {
             JTable target = (JTable) e.getSource();
             int row = target.getSelectedRow();
             if (row < authors.size()) {
-                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar o autor?", "Deletar",
+                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar o autor? \n" +
+                        "Se o autor estiver associado a um livro, ele vai ser deletado também!", "Deletar",
                         JOptionPane.YES_NO_OPTION);
 
                 if (resposta == JOptionPane.YES_OPTION) {

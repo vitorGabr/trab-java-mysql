@@ -13,7 +13,7 @@ import java.util.Map;
 
 import src.entity.InsertSql;
 
-public abstract class DaoImplement {
+public abstract class DaoFactory {
 
     private final static String USER = "root";
     private final static String PASS = "";
@@ -71,34 +71,43 @@ public abstract class DaoImplement {
     }
 
     protected boolean insert(List<InsertSql> data) throws SQLIntegrityConstraintViolationException {
+        Boolean result = false;
         try (Connection c = getConnection()) {
             c.setAutoCommit(false);
-            for (InsertSql e : data) {
-                String comando = "INSERT INTO " + e.getTable() + " SET ";
-                List<Object> list = e.getData().values().stream().filter(v -> v != null).toList();
-                int count = 0;
-                int totalItems = list.size();
+            try {
+                for (InsertSql e : data) {
+                    String comando = "INSERT INTO " + e.getTable() + " SET ";
+                    List<Object> list = e.getData().values().stream().filter(v -> v != null).toList();
+                    int count = 0;
+                    int totalItems = list.size();
 
-                for (Map.Entry<String, Object> entry : e.getData().entrySet()) {
-                    String key = entry.getKey();
-                    if (entry.getValue() != null) {
-                        comando += key + " = ? ";
-                        if (count < totalItems - 1) {
-                            comando += ", ";
+                    for (Map.Entry<String, Object> entry : e.getData().entrySet()) {
+                        String key = entry.getKey();
+                        if (entry.getValue() != null) {
+                            comando += key + " = ? ";
+                            if (count < totalItems - 1) {
+                                comando += ", ";
+                            }
                         }
+                        count++;
                     }
-                    count++;
+                    PreparedStatement s = c.prepareStatement(comando);
+                    parseParams(s, list);
+                    s.executeUpdate();
                 }
-                PreparedStatement s = c.prepareStatement(comando);
-                parseParams(s, list);
-                s.executeUpdate();
+                result = true;
+                c.commit();
+            } catch (SQLException e) {
+                c.rollback();
+                throw e;
+            } finally {
+                c.setAutoCommit(true);
             }
-            c.commit();
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+
+        return result;
     }
 
     protected boolean delete(String id, String value) throws SQLIntegrityConstraintViolationException {

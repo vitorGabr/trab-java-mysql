@@ -91,7 +91,9 @@ public class PublisherController {
             JTable target = (JTable) e.getSource();
             int row = target.getSelectedRow();
             if (row < publishers.size()) {
-                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar a editora?", "Deletar",
+                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar a editora? \n" +
+                        "Se a editora for deletada, todos os livros relacionados a ela serão deletados também.",
+                        "Deletar",
                         JOptionPane.YES_NO_OPTION);
 
                 if (resposta == JOptionPane.YES_OPTION) {
