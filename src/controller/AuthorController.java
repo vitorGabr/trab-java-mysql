@@ -23,29 +23,28 @@ public class AuthorController {
     private List<Author> authors;
 
     public AuthorController(AuthorView view, Dao dao) {
-
         authors = dao.findAllAuthors("");
-
         this.view = view;
         this.dao = dao;
     }
 
     public void init() {
-        this.view.searchAuthor(new SearchNameAction());
-        this.view.createAuthor(new CreateAction());
-        this.view.addTableClickListener(new TableMouseAdapter());
-        this.view.listAuthors(authors);
-        this.view.init();
+        setupListeners();
+        view.listAuthors(authors);
+        view.init();
+    }
 
+    private void setupListeners() {
+        view.searchAuthor(new SearchNameAction());
+        view.createAuthor(new CreateAction());
+        view.addTableClickListener(new TableMouseAdapter());
     }
 
     class SearchNameAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-
             String title = view.getAuthorSearchName();
             authors = dao.findAllAuthors(title);
-
             view.listAuthors(authors);
         }
     }
@@ -55,10 +54,8 @@ public class AuthorController {
         public void actionPerformed(ActionEvent event) {
             Map<String, Object> newAuthorInfo = view.getNewAuthorInformation();
 
-            if (newAuthorInfo.values().stream().filter(value -> value.toString().isEmpty()).count() > 0
-                    || authors.size() == 0) {
-                JOptionPane.showMessageDialog(null, "Os campos são obrigatórios!", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+            if (hasEmptyFields(newAuthorInfo) || authors.isEmpty()) {
+                showError("Os campos são obrigatórios!");
                 return;
             }
 
@@ -66,21 +63,24 @@ public class AuthorController {
             String fname = newAuthorInfo.get("fname").toString();
 
             try {
-                if (!dao.addAuthor(name, fname)) {
-                    throw new Exception();
-                }
+                createAuthor(name, fname);
                 authors = dao.findAllAuthors("");
-                JOptionPane.showMessageDialog(null, "Autor criado com sucesso!");
+                showSuccessMessage("Autor criado com sucesso!");
                 view.listAuthors(authors);
             } catch (SQLIntegrityConstraintViolationException e) {
-                JOptionPane.showMessageDialog(null, "Autor já existe!", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+                showError("Autor já existe!");
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Não é possível criar um autor!", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Erro ao criar autor!", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+                showError("Não é possível criar um autor!");
+            }
+        }
+
+        private boolean hasEmptyFields(Map<String, Object> authorInfo) {
+            return authorInfo.values().stream().anyMatch(value -> value.toString().isEmpty());
+        }
+
+        private void createAuthor(String name, String fname) throws SQLException {
+            if (!dao.addAuthor(name, fname)) {
+                throw new SQLException();
             }
         }
     }
@@ -91,30 +91,37 @@ public class AuthorController {
             JTable target = (JTable) e.getSource();
             int row = target.getSelectedRow();
             if (row < authors.size()) {
-                int resposta = JOptionPane.showConfirmDialog(null, "Deseja deletar o autor? \n" +
-                        "Se o autor estiver associado a um livro, ele vai ser deletado também!", "Deletar",
-                        JOptionPane.YES_NO_OPTION);
+                int resposta = JOptionPane.showConfirmDialog(null,
+                        "Deseja deletar o autor? \nSe o autor estiver associado a um livro, ele vai ser deletado também!",
+                        "Deletar", JOptionPane.YES_NO_OPTION);
 
                 if (resposta == JOptionPane.YES_OPTION) {
-                    Author book = authors.get(row);
-                    try {
-                        if (!dao.deleteAuthor(book.getAuthor_id())) {
-                            throw new Exception();
-                        }
-                        JOptionPane.showMessageDialog(null, "Autor deletado com sucesso!");
-                    } catch (SQLException e1) {
-                        JOptionPane.showMessageDialog(null, "Não é possível deletar o autor!", "Erro",
-                                JOptionPane.ERROR_MESSAGE);
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null, "Erro ao deletar autor!", "Erro",
-                                JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        authors = dao.findAllAuthors("");
-                        view.listAuthors(authors);
-                    }
+                    deleteAuthor(row);
                 }
-
             }
         }
+
+        private void deleteAuthor(int row) {
+            Author author = authors.get(row);
+            try {
+                if (!dao.deleteAuthor(author.getAuthor_id())) {
+                    throw new SQLException();
+                }
+                showSuccessMessage("Autor deletado com sucesso!");
+            } catch (SQLException e1) {
+                showError("Não é possível deletar o autor!");
+            } finally {
+                authors = dao.findAllAuthors("");
+                view.listAuthors(authors);
+            }
+        }
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 }
