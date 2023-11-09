@@ -9,12 +9,16 @@ import javax.swing.JTabbedPane;
 
 import src.view.BookView;
 import src.view.View;
+import src.view.implementaion.tabs.AuthorTab;
 import src.view.implementaion.tabs.BookTab;
+import src.view.implementaion.tabs.PublisherTab;
 
 public class Janela extends JFrame implements View {
 
     JTabbedPane tabedPane = new JTabbedPane();
     private BookTab bookTab = new BookTab();
+    private AuthorTab authorTab = new AuthorTab();
+    private PublisherTab publisherTab = new PublisherTab();
 
     public Janela() {
         init();
@@ -30,6 +34,8 @@ public class Janela extends JFrame implements View {
         setSize(windowWidth, windowHeight);
 
         tabedPane.addTab("Livro", bookTab);
+        tabedPane.addTab("Autor", authorTab);
+        tabedPane.addTab("Editora", publisherTab);
 
         add(tabedPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,6 +45,14 @@ public class Janela extends JFrame implements View {
 
     public BookView getBookT() {
         return bookTab;
+    }
+
+    public AuthorTab getAuthorT() {
+        return authorTab;
+    }
+
+    public PublisherTab getPublisherT() {
+        return publisherTab;
     }
 
 }
