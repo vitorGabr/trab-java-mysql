@@ -21,23 +21,25 @@ public class AuthorController {
     private AuthorView view;
     private Dao dao;
     private List<Author> authors;
+    private ActionUpdate function;
 
-    public AuthorController(AuthorView view, Dao dao) {
+    interface ActionUpdate {
+        void execute();
+    }
+
+    public AuthorController(AuthorView view, Dao dao, ActionUpdate function) {
         authors = dao.findAllAuthors("");
         this.view = view;
         this.dao = dao;
+        this.function = function;
     }
 
     public void init() {
-        setupListeners();
-        view.listAuthors(authors);
-        view.init();
-    }
-
-    private void setupListeners() {
         view.searchAuthor(new SearchNameAction());
         view.createAuthor(new CreateAction());
         view.addTableClickListener(new TableMouseAdapter());
+        view.listAuthors(authors);
+        view.init();
     }
 
     class SearchNameAction implements ActionListener {
@@ -67,6 +69,7 @@ public class AuthorController {
                 authors = dao.findAllAuthors("");
                 showSuccessMessage("Autor criado com sucesso!");
                 view.listAuthors(authors);
+                function.execute();
             } catch (SQLIntegrityConstraintViolationException e) {
                 showError("Autor já existe!");
             } catch (SQLException e) {
@@ -108,6 +111,7 @@ public class AuthorController {
                     throw new SQLException();
                 }
                 showSuccessMessage("Autor deletado com sucesso!");
+                function.execute();
             } catch (SQLException e1) {
                 showError("Não é possível deletar o autor!");
             } finally {
@@ -124,4 +128,5 @@ public class AuthorController {
     private void showSuccessMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
+
 }

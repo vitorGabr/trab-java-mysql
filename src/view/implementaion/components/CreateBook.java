@@ -38,6 +38,7 @@ public class CreateBook extends JPanel {
     JButton retrieveButton = new JButton("Criar");
 
     public void init(List<Author> authors, List<Publisher> publishers) {
+        removeAll();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         keyValues = Map.of(
                 "title", "Título",

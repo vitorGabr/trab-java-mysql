@@ -17,9 +17,21 @@ public class Controller {
 
     public void init() {
         this.view.init();
-        new BookController(this.view.getBookT(), dao).init();
-        new AuthorController(this.view.getAuthorT(), dao).init();
-        new PublisherController(this.view.getPublisherT(), dao).init();
+        BookController bookController = new BookController(this.view.getBookT(), dao);
+        bookController.init();
+
+        new AuthorController(
+                this.view.getAuthorT(),
+                dao,
+                () -> {
+                    bookController.update();
+                }).init();
+
+        new PublisherController(
+                this.view.getPublisherT(),
+                dao, () -> {
+                    bookController.update();
+                }).init();
     }
 
     public Dao getDao() {

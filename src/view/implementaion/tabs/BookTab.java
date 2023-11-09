@@ -23,6 +23,7 @@ public class BookTab extends JPanel implements BookView {
     private CreateBook createItem = new CreateBook();
 
     public void init(List<Publisher> publishers, List<Author> authors) {
+        removeAll();
         createItem.init(authors, publishers);
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         add(search);
@@ -61,5 +62,4 @@ public class BookTab extends JPanel implements BookView {
     public void addTableClickListener(MouseAdapter md) {
         table.addTableListener(md);
     }
-
 }

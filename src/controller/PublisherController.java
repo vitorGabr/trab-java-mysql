@@ -22,23 +22,25 @@ public class PublisherController {
     private PublisherView view;
     private Dao dao;
     private List<Publisher> publishers;
+    private ActionUpdate function;
 
-    public PublisherController(PublisherView view, Dao dao) {
+    interface ActionUpdate {
+        void execute();
+    }
+
+    public PublisherController(PublisherView view, Dao dao, ActionUpdate function) {
         publishers = dao.findAllPublishers("");
         this.view = view;
         this.dao = dao;
+        this.function = function;
     }
 
     public void init() {
-        setupListeners();
-        view.listPublishers(publishers);
-        view.init();
-    }
-
-    private void setupListeners() {
         view.searchPublisher(new SearchNameAction());
         view.createPublisher(new CreateAction());
         view.addTableClickListener(new TableMouseAdapter());
+        view.listPublishers(publishers);
+        view.init();
     }
 
     class SearchNameAction implements ActionListener {
@@ -76,6 +78,7 @@ public class PublisherController {
                 publishers = dao.findAllPublishers("");
                 showSuccessMessage("Editora criada com sucesso!");
                 view.listPublishers(publishers);
+                function.execute();
             } catch (SQLIntegrityConstraintViolationException e) {
                 showError("Editora já existe!");
             } catch (SQLException e) {
@@ -117,6 +120,7 @@ public class PublisherController {
                     throw new SQLException();
                 }
                 showSuccessMessage("Editora deletada com sucesso!");
+                function.execute();
             } catch (SQLException e1) {
                 showError("Não é possível deletar a editora!");
             } finally {

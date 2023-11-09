@@ -36,15 +36,11 @@ public class BookController {
     }
 
     public void init() {
-        setupListeners();
-        view.listBooks(books);
-        view.init(publishers, authors);
-    }
-
-    private void setupListeners() {
         view.searchBook(new SearchNameAction());
         view.createBook(new CreateAction());
         view.addTableClickListener(new TableMouseAdapter());
+        view.listBooks(books);
+        view.init(publishers, authors);
     }
 
     class SearchNameAction implements ActionListener {
@@ -146,4 +142,12 @@ public class BookController {
     private void showSuccessMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
+
+    public void update() {
+        books = dao.findAllBooks("");
+        publishers = dao.findAllPublishers("");
+        authors = dao.findAllAuthors("");
+        view.init(publishers, authors);
+    }
+
 }
